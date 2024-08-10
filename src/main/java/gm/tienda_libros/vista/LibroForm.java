@@ -46,6 +46,7 @@ public class LibroForm extends JFrame {
     }
 
     private void iniciarForma() {
+        createUIComponents();
         setContentPane(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -53,7 +54,7 @@ public class LibroForm extends JFrame {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension tamanioPantalla = toolkit.getScreenSize();
         int x = (tamanioPantalla.width - getWidth() / 2);
-        int y = (tamanioPantalla.height = getHeight() / 2);
+        int y = (tamanioPantalla.height - getHeight() / 2);
         setLocation(x, y);
     }
 
@@ -157,24 +158,50 @@ public class LibroForm extends JFrame {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
-        // Creamos el elemento idTexto oculto
-        idTexto = new JTextField("");
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        idTexto = new JTextField();
         idTexto.setVisible(false);
 
-        this.tablaModeloLibros = new DefaultTableModel(0, 5){
-            @Override
-            public boolean isCellEditable(int row, int column){return false;}
-        };
+        libroTexto = new JTextField();
+        autorTexto = new JTextField();
+        precioTexto = new JTextField();
+        existenciasTexto = new JTextField();
 
+        agregarButton = new JButton("Agregar");
+        modificarButton = new JButton("Modificar");
+        eliminarButton = new JButton("Eliminar");
+
+        tablaModeloLibros = new DefaultTableModel(0, 5) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         String[] cabeceros = {"Id", "Libro", "Autor", "Precio", "Existencias"};
-        this.tablaModeloLibros.setColumnIdentifiers(cabeceros);
-        // Intanciar el objeto JTable
-        this.tablaLibros = new JTable(tablaModeloLibros);
-        // Evitar que se seleccionen varios registros
+        tablaModeloLibros.setColumnIdentifiers(cabeceros);
+        tablaLibros = new JTable(tablaModeloLibros);
         tablaLibros.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listarLibros();
+
+        // Ahora agregas los componentes al panel como quieras
+        JPanel formPanel = new JPanel(new GridLayout(5, 2));
+        formPanel.add(new JLabel("Libro:"));
+        formPanel.add(libroTexto);
+        formPanel.add(new JLabel("Autor:"));
+        formPanel.add(autorTexto);
+        formPanel.add(new JLabel("Precio:"));
+        formPanel.add(precioTexto);
+        formPanel.add(new JLabel("Existencias:"));
+        formPanel.add(existenciasTexto);
+        formPanel.add(agregarButton);
+        formPanel.add(modificarButton);
+
+        panel.add(formPanel, BorderLayout.NORTH);
+        panel.add(new JScrollPane(tablaLibros), BorderLayout.CENTER);
+        panel.add(eliminarButton, BorderLayout.SOUTH);
     }
+
 
     private void listarLibros() {
         // Limpiar la tabla
